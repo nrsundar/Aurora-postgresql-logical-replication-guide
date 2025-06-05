@@ -1,6 +1,6 @@
 # Aurora PostgreSQL Logical Replication Troubleshooting Guide
 
-Advanced troubleshooting for Aurora PostgreSQL logical replication - Cross-Region (us-east-1 → us-east-1) Setup.
+Advanced troubleshooting for Aurora PostgreSQL logical replication - Within Region Setup.
 
 ## Aurora Cluster Connection Issues
 
@@ -45,37 +45,6 @@ Advanced troubleshooting for Aurora PostgreSQL logical replication - Cross-Regio
      --query 'SecurityGroups[0].IpPermissions'
    ```
 
-
-
-### Cross-Region Connection Issues
-
-**Additional Cross-Region Troubleshooting:**
-
-1. **VPC Peering Status**
-   ```bash
-   aws ec2 describe-vpc-peering-connections \
-     --filters Name=status-code,Values=active
-   ```
-
-2. **Cross-Region Route Tables**
-   ```bash
-   aws ec2 describe-route-tables \
-     --filters Name=route.destination-cidr-block,Values=10.1.0.0/16
-   ```
-
-3. **Inter-Region Security Group Rules**
-   ```bash
-   # Check if source VPC CIDR is allowed
-   aws ec2 describe-security-groups \
-     --group-ids <target-security-group> \
-     --query 'SecurityGroups[0].IpPermissions[?CidrIp==`10.0.0.0/16`]'
-   ```
-
-4. **Cross-Region Network ACLs**
-   ```bash
-   aws ec2 describe-network-acls \
-     --filters Name=association.subnet-id,Values=<target-subnet-id>
-   ```
 
 
 ### SSL Connection Issues

@@ -1,15 +1,15 @@
 # Aurora PostgreSQL Logical Replication Guide
 
-A comprehensive educational guide for setting up Aurora PostgreSQL logical replication on AWS - Cross-Region (us-east-1 → us-east-1) Setup.
+A comprehensive educational guide for setting up Aurora PostgreSQL logical replication on AWS - Within Region Setup.
 
 ## 🎯 Learning Objectives
 
 - Master Aurora PostgreSQL logical replication concepts
-- Deploy Aurora clusters with cross-region replication
+- Deploy Aurora clusters with within-region replication
 - Configure publications and subscriptions for cluster architectures
 - Monitor Aurora replication performance and lag
 - Implement Aurora-specific best practices and troubleshooting
-- Understand cross-region networking and data transfer costs
+- Understand single-region networking
 
 ## 📋 Prerequisites
 
@@ -17,7 +17,7 @@ A comprehensive educational guide for setting up Aurora PostgreSQL logical repli
 - AWS CLI configured with appropriate IAM roles
 - PostgreSQL knowledge (intermediate to advanced level)
 - Understanding of Aurora cluster architecture
-- Cross-region VPC peering and networking concepts
+- VPC networking fundamentals
 
 ## 🚀 Quick Start
 
@@ -68,8 +68,17 @@ This guide provisions AWS resources that **incur charges**:
 
 - `docs/setup-guide.md` - Initial setup and prerequisites
 - `docs/configuration.md` - Step-by-step configuration
-- `docs/troubleshooting.md` - Common issues and solutions
+- **🚨 `docs/troubleshooting.md` - Aurora PostgreSQL troubleshooting guide**
 - `docs/cost-management.md` - Cost optimization strategies
+
+## 🔧 Quick Help
+
+**Need help?** Check **docs/troubleshooting.md** for solutions to:
+- Aurora cluster connection issues
+- Single-region networking problems
+- Logical replication setup failures
+- Aurora parameter configuration problems
+- Performance and replication lag monitoring
 
 ## 🔧 Scripts
 
