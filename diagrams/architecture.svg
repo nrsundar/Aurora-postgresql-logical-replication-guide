@@ -1,110 +1,61 @@
-<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
   <defs>
-    <linearGradient id="awsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FF9900;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#FF6600;stop-opacity:1" />
-    </linearGradient>
-    <linearGradient id="dbGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#336791;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#1E3A5F;stop-opacity:1" />
-    </linearGradient>
-  </defs>
-  
-  <!-- Background -->
-  <rect width="800" height="600" fill="#f8f9fa"/>
-  
-  <!-- Title -->
-  <text x="400" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2c3e50">
-    PostgreSQL Logical Replication Architecture
-  </text>
-  
-  <!-- AWS Cloud -->
-  <rect x="50" y="80" width="700" height="480" rx="20" fill="none" stroke="#FF9900" stroke-width="3" stroke-dasharray="10,5"/>
-  <text x="400" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FF9900">
-    AWS Cloud (us-east-1)
-  </text>
-  
-  <!-- VPC -->
-  <rect x="100" y="130" width="600" height="400" rx="15" fill="#E8F4FD" stroke="#1976D2" stroke-width="2"/>
-  <text x="400" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1976D2">
-    VPC (10.0.0.0/16)
-  </text>
-  
-  <!-- Primary Subnet -->
-  <rect x="130" y="180" width="250" height="320" rx="10" fill="#C8E6C9" stroke="#4CAF50" stroke-width="2"/>
-  <text x="255" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">
-    Public Subnet AZ-A
-  </text>
-  <text x="255" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#4CAF50">
-    10.0.1.0/24
-  </text>
-  
-  <!-- Replica Subnet -->
-  <rect x="420" y="180" width="250" height="320" rx="10" fill="#FFECB3" stroke="#FF9800" stroke-width="2"/>
-  <text x="545" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">
-    Public Subnet AZ-B
-  </text>
-  <text x="545" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FF9800">
-    10.0.2.0/24
-  </text>
-  
-  <!-- Primary Database -->
-  <g transform="translate(180, 260)">
-    <rect width="150" height="100" rx="10" fill="url(#dbGradient)" stroke="#2c3e50" stroke-width="2"/>
-    <circle cx="75" cy="30" r="15" fill="white"/>
-    <text x="75" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#336791">DB</text>
-    <text x="75" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Primary</text>
-    <text x="75" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">db.r6g.large</text>
-    <text x="75" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">PostgreSQL 15</text>
-  </g>
-  
-  <!-- Replica Database -->
-  <g transform="translate(470, 260)">
-    <rect width="150" height="100" rx="10" fill="url(#dbGradient)" stroke="#2c3e50" stroke-width="2"/>
-    <circle cx="75" cy="30" r="15" fill="white"/>
-    <text x="75" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#336791">DB</text>
-    <text x="75" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Replica</text>
-    <text x="75" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">db.r6g.large</text>
-    <text x="75" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">PostgreSQL 15</text>
-  </g>
-  
-  <!-- Replication Arrow -->
-  <defs>
+    <style>
+      .region-box { fill: #e6f3ff; stroke: #1f77b4; stroke-width: 2; }
+      .aurora-cluster { fill: #fff2cc; stroke: #d6b656; stroke-width: 2; }
+      .instance { fill: #d5e8d4; stroke: #82b366; stroke-width: 1; }
+      .connection { stroke: #ff6b6b; stroke-width: 2; marker-end: url(#arrowhead); }
+      .text { font-family: Arial, sans-serif; font-size: 12px; }
+      .title { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; }
+    </style>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#e74c3c"/>
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ff6b6b" />
     </marker>
   </defs>
-  <path d="M 330 310 Q 400 280 470 310" stroke="#e74c3c" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
-  <text x="400" y="295" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#e74c3c">
-    Logical Replication
-  </text>
+
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" class="title">Aurora PostgreSQL Logical Replication - Single Region (us-east-1)</text>
+
   
-  <!-- Security Group -->
-  <rect x="160" y="390" width="190" height="80" rx="5" fill="none" stroke="#9C27B0" stroke-width="2" stroke-dasharray="5,5"/>
-  <text x="255" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#9C27B0">
-    Security Group
-  </text>
-  <text x="255" y="425" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9C27B0">
-    Port 5432 (PostgreSQL)
-  </text>
-  <text x="255" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9C27B0">
-    SSL Required
-  </text>
+  <!-- Single Region Setup -->
+  <rect x="50" y="60" width="700" height="500" class="region-box" rx="10"/>
+  <text x="400" y="85" text-anchor="middle" class="title">AWS Region: us-east-1</text>
   
-  <rect x="450" y="390" width="190" height="80" rx="5" fill="none" stroke="#9C27B0" stroke-width="2" stroke-dasharray="5,5"/>
-  <text x="545" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#9C27B0">
-    Security Group
-  </text>
-  <text x="545" y="425" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9C27B0">
-    Port 5432 (PostgreSQL)
-  </text>
-  <text x="545" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9C27B0">
-    SSL Required
-  </text>
+  <!-- VPC -->
+  <rect x="100" y="110" width="600" height="400" fill="#f0f8ff" stroke="#4682b4" stroke-width="2" rx="5"/>
+  <text x="400" y="135" text-anchor="middle" class="text">VPC (10.0.0.0/16)</text>
   
-  <!-- Internet Gateway -->
-  <rect x="370" y="550" width="60" height="30" rx="5" fill="url(#awsGradient)"/>
-  <text x="400" y="570" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">
-    IGW
-  </text>
+  <!-- Primary Aurora Cluster -->
+  <rect x="150" y="170" width="250" height="150" class="aurora-cluster" rx="5"/>
+  <text x="275" y="195" text-anchor="middle" class="text">Primary Aurora Cluster</text>
+  <rect x="170" y="210" width="80" height="40" class="instance" rx="3"/>
+  <text x="210" y="235" text-anchor="middle" class="text">Writer</text>
+  <rect x="270" y="210" width="80" height="40" class="instance" rx="3"/>
+  <text x="310" y="235" text-anchor="middle" class="text">Reader</text>
+  <text x="275" y="285" text-anchor="middle" class="text">Publication: my_publication</text>
+  
+  <!-- Replica Aurora Cluster -->
+  <rect x="450" y="170" width="250" height="150" class="aurora-cluster" rx="5"/>
+  <text x="575" y="195" text-anchor="middle" class="text">Replica Aurora Cluster</text>
+  <rect x="470" y="210" width="80" height="40" class="instance" rx="3"/>
+  <text x="510" y="235" text-anchor="middle" class="text">Writer</text>
+  <rect x="570" y="210" width="80" height="40" class="instance" rx="3"/>
+  <text x="610" y="235" text-anchor="middle" class="text">Reader</text>
+  <text x="575" y="285" text-anchor="middle" class="text">Subscription: my_subscription</text>
+  
+  <!-- Logical Replication Arrow -->
+  <line x1="400" y1="245" x2="450" y2="245" class="connection"/>
+  <text x="425" y="240" text-anchor="middle" class="text">Logical Replication</text>
+  
+  
+  <!-- Legend -->
+  <rect x="50" y="530" width="700" height="50" fill="#f9f9f9" stroke="#ccc" stroke-width="1" rx="3"/>
+  <text x="70" y="550" class="text">Legend:</text>
+  <rect x="120" y="540" width="15" height="10" class="aurora-cluster"/>
+  <text x="145" y="550" class="text">Aurora Cluster</text>
+  <rect x="250" y="540" width="15" height="10" class="instance"/>
+  <text x="275" y="550" class="text">Aurora Instance</text>
+  <line x1="380" y1="545" x2="420" y2="545" class="connection"/>
+  <text x="430" y="550" class="text">Logical Replication</text>
 </svg>

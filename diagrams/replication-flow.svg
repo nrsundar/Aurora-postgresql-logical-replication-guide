@@ -1,165 +1,89 @@
-<svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="900" height="500">
   <defs>
-    <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#2E7D32;stop-opacity:1" />
-    </linearGradient>
-    <linearGradient id="replicaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#1565C0;stop-opacity:1" />
-    </linearGradient>
-    <marker id="flowArrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="#FF5722"/>
+    <style>
+      .step-box { fill: #e1f5fe; stroke: #0277bd; stroke-width: 2; }
+      .data-flow { stroke: #4caf50; stroke-width: 3; marker-end: url(#greenArrow); }
+      .control-flow { stroke: #ff9800; stroke-width: 2; marker-end: url(#orangeArrow); }
+      .text { font-family: Arial, sans-serif; font-size: 12px; }
+      .title { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; }
+      .step-title { font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; }
+    </style>
+    <marker id="greenArrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4caf50" />
+    </marker>
+    <marker id="orangeArrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ff9800" />
     </marker>
   </defs>
-  
-  <!-- Background -->
-  <rect width="900" height="500" fill="#fafafa"/>
-  
+
   <!-- Title -->
-  <text x="450" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2c3e50">
-    PostgreSQL Logical Replication Data Flow
-  </text>
-  
-  <!-- Primary Database -->
-  <g transform="translate(80, 80)">
-    <rect width="200" height="320" rx="15" fill="url(#primaryGradient)" stroke="#1B5E20" stroke-width="3"/>
-    <text x="100" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white">
-      Primary Database
-    </text>
-    
-    <!-- WAL -->
-    <rect x="20" y="50" width="160" height="40" rx="5" fill="white" fill-opacity="0.9"/>
-    <text x="100" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1B5E20">
-      Write-Ahead Log (WAL)
-    </text>
-    
-    <!-- Publication -->
-    <rect x="20" y="110" width="160" height="40" rx="5" fill="white" fill-opacity="0.9"/>
-    <text x="100" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1B5E20">
-      Publication
-    </text>
-    
-    <!-- Tables -->
-    <rect x="20" y="170" width="160" height="120" rx="5" fill="white" fill-opacity="0.9"/>
-    <text x="100" y="195" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1B5E20">
-      Tables
-    </text>
-    <text x="30" y="215" font-family="monospace" font-size="10" fill="#1B5E20">• employees</text>
-    <text x="30" y="230" font-family="monospace" font-size="10" fill="#1B5E20">• departments</text>
-    <text x="30" y="245" font-family="monospace" font-size="10" fill="#1B5E20">• projects</text>
-    <text x="30" y="270" font-family="monospace" font-size="10" fill="#1B5E20">INSERT, UPDATE, DELETE</text>
-  </g>
-  
-  <!-- Replica Database -->
-  <g transform="translate(620, 80)">
-    <rect width="200" height="320" rx="15" fill="url(#replicaGradient)" stroke="#0D47A1" stroke-width="3"/>
-    <text x="100" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white">
-      Replica Database
-    </text>
-    
-    <!-- Subscription -->
-    <rect x="20" y="50" width="160" height="40" rx="5" fill="white" fill-opacity="0.9"/>
-    <text x="100" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#0D47A1">
-      Subscription
-    </text>
-    
-    <!-- Logical Replication Worker -->
-    <rect x="20" y="110" width="160" height="40" rx="5" fill="white" fill-opacity="0.9"/>
-    <text x="100" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#0D47A1">
-      Logical Replication
-    </text>
-    <text x="100" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#0D47A1">
-      Worker Process
-    </text>
-    
-    <!-- Tables -->
-    <rect x="20" y="170" width="160" height="120" rx="5" fill="white" fill-opacity="0.9"/>
-    <text x="100" y="195" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#0D47A1">
-      Replicated Tables
-    </text>
-    <text x="30" y="215" font-family="monospace" font-size="10" fill="#0D47A1">• employees</text>
-    <text x="30" y="230" font-family="monospace" font-size="10" fill="#0D47A1">• departments</text>
-    <text x="30" y="245" font-family="monospace" font-size="10" fill="#0D47A1">• projects</text>
-    <text x="30" y="270" font-family="monospace" font-size="10" fill="#0D47A1">Read-only access</text>
-  </g>
-  
-  <!-- Replication Flow Steps -->
-  <g transform="translate(320, 120)">
-    <!-- Step 1 -->
-    <circle cx="50" cy="30" r="20" fill="#FF5722" stroke="#D84315" stroke-width="2"/>
-    <text x="50" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">1</text>
-    <text x="50" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF5722">
-      Changes Written
-    </text>
-    <text x="50" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF5722">
-      to WAL
-    </text>
-    
-    <!-- Step 2 -->
-    <circle cx="150" cy="30" r="20" fill="#FF5722" stroke="#D84315" stroke-width="2"/>
-    <text x="150" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">2</text>
-    <text x="150" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF5722">
-      WAL Decoded
-    </text>
-    <text x="150" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF5722">
-      to Logical
-    </text>
-    
-    <!-- Step 3 -->
-    <circle cx="250" cy="30" r="20" fill="#FF5722" stroke="#D84315" stroke-width="2"/>
-    <text x="250" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">3</text>
-    <text x="250" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF5722">
-      Streamed to
-    </text>
-    <text x="250" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FF5722">
-      Subscriber
-    </text>
-    
-    <!-- Arrows between steps -->
-    <path d="M 70 30 L 130 30" stroke="#FF5722" stroke-width="2" marker-end="url(#flowArrow)"/>
-    <path d="M 170 30 L 230 30" stroke="#FF5722" stroke-width="2" marker-end="url(#flowArrow)"/>
-  </g>
-  
-  <!-- Main replication flow arrow -->
-  <path d="M 280 240 Q 450 200 620 240" stroke="#FF5722" stroke-width="4" fill="none" marker-end="url(#flowArrow)"/>
-  <text x="450" y="215" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF5722">
-    Logical Replication Stream
-  </text>
-  
-  <!-- Key Features -->
-  <g transform="translate(50, 430)">
-    <text x="0" y="0" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2c3e50">
-      Key Features:
-    </text>
-    <text x="120" y="0" font-family="Arial, sans-serif" font-size="14" fill="#2c3e50">
-      • Table-level replication
-    </text>
-    <text x="280" y="0" font-family="Arial, sans-serif" font-size="14" fill="#2c3e50">
-      • Row-based changes
-    </text>
-    <text x="420" y="0" font-family="Arial, sans-serif" font-size="14" fill="#2c3e50">
-      • Conflict resolution
-    </text>
-    <text x="570" y="0" font-family="Arial, sans-serif" font-size="14" fill="#2c3e50">
-      • DDL not replicated
-    </text>
-  </g>
-  
-  <!-- Connection Details -->
-  <g transform="translate(350, 300)">
-    <rect width="200" height="80" rx="10" fill="#f5f5f5" stroke="#bdbdbd" stroke-width="2"/>
-    <text x="100" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#424242">
-      Connection Details
-    </text>
-    <text x="100" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#424242">
-      Protocol: PostgreSQL Wire Protocol
-    </text>
-    <text x="100" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#424242">
-      Port: 5432 (SSL Required)
-    </text>
-    <text x="100" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#424242">
-      Authentication: User/Password
-    </text>
-  </g>
+  <text x="450" y="30" text-anchor="middle" class="title">Aurora PostgreSQL Logical Replication Flow</text>
+
+  <!-- Step 1: Publication Creation -->
+  <rect x="50" y="80" width="150" height="80" class="step-box" rx="5"/>
+  <text x="125" y="105" text-anchor="middle" class="step-title">1. Create Publication</text>
+  <text x="125" y="125" text-anchor="middle" class="text">Primary Aurora Writer</text>
+  <text x="125" y="140" text-anchor="middle" class="text">CREATE PUBLICATION</text>
+
+  <!-- Step 2: Replication Slot -->
+  <rect x="250" y="80" width="150" height="80" class="step-box" rx="5"/>
+  <text x="325" y="105" text-anchor="middle" class="step-title">2. Replication Slot</text>
+  <text x="325" y="125" text-anchor="middle" class="text">WAL Stream Created</text>
+  <text x="325" y="140" text-anchor="middle" class="text">pg_replication_slots</text>
+
+  <!-- Step 3: Subscription -->
+  <rect x="450" y="80" width="150" height="80" class="step-box" rx="5"/>
+  <text x="525" y="105" text-anchor="middle" class="step-title">3. Create Subscription</text>
+  <text x="525" y="125" text-anchor="middle" class="text">Replica Aurora Writer</text>
+  <text x="525" y="140" text-anchor="middle" class="text">CREATE SUBSCRIPTION</text>
+
+  <!-- Step 4: Initial Sync -->
+  <rect x="650" y="80" width="150" height="80" class="step-box" rx="5"/>
+  <text x="725" y="105" text-anchor="middle" class="step-title">4. Initial Table Copy</text>
+  <text x="725" y="125" text-anchor="middle" class="text">Bulk Data Transfer</text>
+  <text x="725" y="140" text-anchor="middle" class="text">pg_dump/restore</text>
+
+  <!-- Data Flow Arrows -->
+  <line x1="200" y1="120" x2="250" y2="120" class="control-flow"/>
+  <line x1="400" y1="120" x2="450" y2="120" class="control-flow"/>
+  <line x1="600" y1="120" x2="650" y2="120" class="data-flow"/>
+
+  <!-- Continuous Replication Section -->
+  <text x="450" y="220" text-anchor="middle" class="title">Continuous Replication Process</text>
+
+  <!-- Primary Aurora Operations -->
+  <rect x="100" y="260" width="200" height="100" class="step-box" rx="5"/>
+  <text x="200" y="285" text-anchor="middle" class="step-title">Primary Aurora Writer</text>
+  <text x="200" y="305" text-anchor="middle" class="text">1. INSERT/UPDATE/DELETE</text>
+  <text x="200" y="320" text-anchor="middle" class="text">2. WAL Records Generated</text>
+  <text x="200" y="335" text-anchor="middle" class="text">3. Logical Decoding</text>
+
+  <!-- Replica Aurora Operations -->
+  <rect x="600" y="260" width="200" height="100" class="step-box" rx="5"/>
+  <text x="700" y="285" text-anchor="middle" class="step-title">Replica Aurora Writer</text>
+  <text x="700" y="305" text-anchor="middle" class="text">1. Receive WAL Stream</text>
+  <text x="700" y="320" text-anchor="middle" class="text">2. Apply Changes</text>
+  <text x="700" y="335" text-anchor="middle" class="text">3. Update Tables</text>
+
+  <!-- Network Transfer -->
+  <rect x="350" y="280" width="200" height="60" fill="#fff3e0" stroke="#ef6c00" stroke-width="2" rx="5"/>
+  <text x="450" y="305" text-anchor="middle" class="step-title">Within-Region Transfer</text>
+  <text x="450" y="325" text-anchor="middle" class="text">Low latency, no data charges</text>
+
+  <!-- Continuous flow arrows -->
+  <line x1="300" y1="310" x2="350" y2="310" class="data-flow"/>
+  <line x1="550" y1="310" x2="600" y2="310" class="data-flow"/>
+
+  <!-- Monitoring Section -->
+  <rect x="200" y="400" width="500" height="60" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2" rx="5"/>
+  <text x="450" y="425" text-anchor="middle" class="step-title">Monitoring & Validation</text>
+  <text x="450" y="445" text-anchor="middle" class="text">pg_stat_subscription • pg_replication_slots • CloudWatch Metrics</text>
+
+  <!-- Legend -->
+  <rect x="50" y="480" width="800" height="15" fill="#f9f9f9" stroke="#ccc" stroke-width="1"/>
+  <line x1="70" y1="487" x2="90" y2="487" class="data-flow"/>
+  <text x="100" y="492" class="text">Data Flow</text>
+  <line x1="200" y1="487" x2="220" y2="487" class="control-flow"/>
+  <text x="230" y="492" class="text">Control Flow</text>
 </svg>

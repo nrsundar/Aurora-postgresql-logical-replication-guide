@@ -1,19 +1,19 @@
 ---
 layout: default
-title: PostgreSQL Logical Replication Guide
+title: Aurora PostgreSQL Logical Replication Guide
 ---
 
-# PostgreSQL Logical Replication Guide
+# Aurora PostgreSQL Logical Replication Guide
 
-Welcome to the comprehensive educational guide for setting up PostgreSQL logical replication on AWS RDS.
+Welcome to the comprehensive educational guide for setting up Aurora PostgreSQL logical replication on AWS - Within Region Setup.
 
 ## 🎯 Learning Objectives
 
-- Understand PostgreSQL logical replication concepts
-- Set up AWS RDS instances for replication  
-- Configure publication and subscription
-- Monitor replication performance
-- Implement best practices for production environments
+- Master Aurora PostgreSQL logical replication concepts
+- Deploy Aurora clusters with within-region replication
+- Configure publications and subscriptions for cluster architectures
+- Monitor Aurora replication performance and lag
+- Implement Aurora-specific best practices and troubleshooting
 
 ## 📚 Documentation
 
