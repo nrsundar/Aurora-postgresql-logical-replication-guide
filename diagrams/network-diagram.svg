@@ -1,0 +1,173 @@
+<svg viewBox="0 0 1000 700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="internetGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#607D8B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#37474F;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="vpcGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#BBDEFB;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1000" height="700" fill="#f8f9fa"/>
+  
+  <!-- Title -->
+  <text x="500" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2c3e50">
+    PostgreSQL Replication Network Architecture
+  </text>
+  
+  <!-- Internet -->
+  <rect x="50" y="70" width="900" height="100" rx="15" fill="url(#internetGradient)"/>
+  <text x="500" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white">
+    Internet
+  </text>
+  <text x="500" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white">
+    External Connectivity
+  </text>
+  
+  <!-- AWS Region -->
+  <rect x="100" y="200" width="800" height="470" rx="20" fill="none" stroke="#FF9900" stroke-width="3"/>
+  <text x="500" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FF9900">
+    AWS Region: us-east-1
+  </text>
+  
+  <!-- VPC -->
+  <rect x="150" y="260" width="700" height="380" rx="15" fill="url(#vpcGradient)" stroke="#1976D2" stroke-width="3"/>
+  <text x="500" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1976D2">
+    VPC: 10.0.0.0/16
+  </text>
+  
+  <!-- Internet Gateway -->
+  <rect x="470" y="180" width="60" height="40" rx="8" fill="#FF9900"/>
+  <text x="500" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">
+    IGW
+  </text>
+  
+  <!-- Route Table -->
+  <rect x="180" y="320" width="100" height="60" rx="8" fill="#4CAF50"/>
+  <text x="230" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">
+    Route Table
+  </text>
+  <text x="230" y="355" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">
+    0.0.0.0/0 → IGW
+  </text>
+  <text x="230" y="370" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">
+    10.0.0.0/16 → Local
+  </text>
+  
+  <!-- Availability Zone A -->
+  <rect x="200" y="410" width="250" height="200" rx="10" fill="#C8E6C9" stroke="#4CAF50" stroke-width="2"/>
+  <text x="325" y="435" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2E7D32">
+    Availability Zone A
+  </text>
+  
+  <!-- Public Subnet A -->
+  <rect x="220" y="450" width="210" height="140" rx="8" fill="#A5D6A7" stroke="#388E3C" stroke-width="2"/>
+  <text x="325" y="470" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1B5E20">
+    Public Subnet
+  </text>
+  <text x="325" y="485" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#1B5E20">
+    10.0.1.0/24
+  </text>
+  
+  <!-- Primary RDS -->
+  <g transform="translate(250, 510)">
+    <rect width="120" height="60" rx="8" fill="#336791" stroke="#1E3A5F" stroke-width="2"/>
+    <circle cx="30" cy="20" r="8" fill="white"/>
+    <text x="30" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#336791">DB</text>
+    <text x="75" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">Primary RDS</text>
+    <text x="60" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">db.r6g.large</text>
+    <text x="60" y="52" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">PostgreSQL 15</text>
+  </g>
+  
+  <!-- Availability Zone B -->
+  <rect x="550" y="410" width="250" height="200" rx="10" fill="#FFECB3" stroke="#FF9800" stroke-width="2"/>
+  <text x="675" y="435" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#E65100">
+    Availability Zone B
+  </text>
+  
+  <!-- Public Subnet B -->
+  <rect x="570" y="450" width="210" height="140" rx="8" fill="#FFE082" stroke="#F57C00" stroke-width="2"/>
+  <text x="675" y="470" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#BF360C">
+    Public Subnet
+  </text>
+  <text x="675" y="485" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#BF360C">
+    10.0.2.0/24
+  </text>
+  
+  <!-- Replica RDS -->
+  <g transform="translate(600, 510)">
+    <rect width="120" height="60" rx="8" fill="#336791" stroke="#1E3A5F" stroke-width="2"/>
+    <circle cx="30" cy="20" r="8" fill="white"/>
+    <text x="30" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#336791">DB</text>
+    <text x="75" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">Replica RDS</text>
+    <text x="60" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">db.r6g.large</text>
+    <text x="60" y="52" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">PostgreSQL 15</text>
+  </g>
+  
+  <!-- Security Groups -->
+  <rect x="240" y="490" width="140" height="20" rx="3" fill="none" stroke="#9C27B0" stroke-width="2" stroke-dasharray="3,3"/>
+  <text x="310" y="505" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#9C27B0">
+    Security Group: PostgreSQL
+  </text>
+  
+  <rect x="590" y="490" width="140" height="20" rx="3" fill="none" stroke="#9C27B0" stroke-width="2" stroke-dasharray="3,3"/>
+  <text x="660" y="505" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#9C27B0">
+    Security Group: PostgreSQL
+  </text>
+  
+  <!-- Connection Lines -->
+  <!-- Internet to IGW -->
+  <line x1="500" y1="170" x2="500" y2="180" stroke="#424242" stroke-width="3"/>
+  
+  <!-- IGW to VPC -->
+  <line x1="500" y1="220" x2="500" y2="260" stroke="#1976D2" stroke-width="3"/>
+  
+  <!-- Route Table connections -->
+  <line x1="280" y1="350" x2="325" y2="450" stroke="#4CAF50" stroke-width="2"/>
+  <line x1="280" y1="350" x2="675" y2="450" stroke="#FF9800" stroke-width="2"/>
+  
+  <!-- Replication connection -->
+  <defs>
+    <marker id="replicationArrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#e74c3c"/>
+    </marker>
+  </defs>
+  <path d="M 370 540 Q 500 520 600 540" stroke="#e74c3c" stroke-width="3" fill="none" marker-end="url(#replicationArrow)"/>
+  <text x="485" y="530" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#e74c3c">
+    Logical Replication (Port 5432)
+  </text>
+  
+  <!-- Network ACLs -->
+  <g transform="translate(720, 320)">
+    <rect width="100" height="60" rx="8" fill="#795548"/>
+    <text x="50" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">
+      Network ACL
+    </text>
+    <text x="50" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">
+      Default: Allow All
+    </text>
+    <text x="50" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">
+      Subnet Level
+    </text>
+  </g>
+  
+  <!-- Security Group Details -->
+  <g transform="translate(50, 650)">
+    <rect width="900" height="40" rx="5" fill="#f5f5f5" stroke="#bdbdbd" stroke-width="1"/>
+    <text x="20" y="20" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">
+      Security Group Rules:
+    </text>
+    <text x="150" y="20" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">
+      Inbound: PostgreSQL (5432) from Security Group
+    </text>
+    <text x="420" y="20" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">
+      Outbound: All traffic
+    </text>
+    <text x="580" y="20" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">
+      Protocol: TCP/SSL
+    </text>
+  </g>
+</svg>

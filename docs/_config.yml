@@ -1,0 +1,25 @@
+# Jekyll configuration for GitHub Pages
+title: "PostgreSQL Logical Replication Guide"
+description: "Educational guide for setting up PostgreSQL logical replication on AWS RDS"
+baseurl: "/aurora-postgresql-logical-replication-guide"
+url: "https://yourusername.github.io"
+
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Exclude files from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - cloudformation/
+  - scripts/

@@ -1,0 +1,224 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'IAM Roles and Policies for PostgreSQL Logical Replication'
+
+Parameters:
+  EnvironmentName:
+    Description: Environment name prefix
+    Type: String
+    Default: PostgreSQLReplication
+
+Resources:
+  # Enhanced Monitoring Role for RDS
+  RDSEnhancedMonitoringRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${EnvironmentName}-RDSEnhancedMonitoringRole'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: monitoring.rds.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-RDSEnhancedMonitoringRole'
+
+  # Service Role for RDS
+  RDSServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${EnvironmentName}-RDSServiceRole'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: rds.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: RDSServicePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - logs:DescribeLogStreams
+                Resource: !Sub 'arn:aws:logs:us-east-1:*:log-group:/aws/rds/*'
+
+  # User Policy for Managing Resources
+  PostgreSQLReplicationUserPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub '${EnvironmentName}-UserPolicy'
+      Description: Policy for users managing PostgreSQL replication resources
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          # RDS Permissions
+          - Effect: Allow
+            Action:
+              - rds:DescribeDBInstances
+              - rds:DescribeDBClusters
+              - rds:DescribeDBSubnetGroups
+              - rds:DescribeDBParameterGroups
+              - rds:DescribeDBSnapshots
+              - rds:CreateDBInstance
+              - rds:DeleteDBInstance
+              - rds:ModifyDBInstance
+              - rds:RebootDBInstance
+              - rds:CreateDBSnapshot
+              - rds:DeleteDBSnapshot
+              - rds:RestoreDBInstanceFromDBSnapshot
+              - rds:CreateDBSubnetGroup
+              - rds:DeleteDBSubnetGroup
+              - rds:CreateDBParameterGroup
+              - rds:DeleteDBParameterGroup
+              - rds:ModifyDBParameterGroup
+            Resource: '*'
+            
+          # VPC Permissions
+          - Effect: Allow
+            Action:
+              - ec2:DescribeVpcs
+              - ec2:DescribeSubnets
+              - ec2:DescribeSecurityGroups
+              - ec2:DescribeAvailabilityZones
+              - ec2:DescribeInternetGateways
+              - ec2:DescribeRouteTables
+              - ec2:CreateVpc
+              - ec2:DeleteVpc
+              - ec2:CreateSubnet
+              - ec2:DeleteSubnet
+              - ec2:CreateSecurityGroup
+              - ec2:DeleteSecurityGroup
+              - ec2:AuthorizeSecurityGroupIngress
+              - ec2:RevokeSecurityGroupIngress
+              - ec2:CreateInternetGateway
+              - ec2:DeleteInternetGateway
+              - ec2:AttachInternetGateway
+              - ec2:DetachInternetGateway
+              - ec2:CreateRouteTable
+              - ec2:DeleteRouteTable
+              - ec2:AssociateRouteTable
+              - ec2:DisassociateRouteTable
+              - ec2:CreateRoute
+              - ec2:DeleteRoute
+              - ec2:ModifyVpcAttribute
+              - ec2:CreateTags
+              - ec2:DeleteTags
+            Resource: '*'
+            
+          # CloudFormation Permissions
+          - Effect: Allow
+            Action:
+              - cloudformation:CreateStack
+              - cloudformation:DeleteStack
+              - cloudformation:UpdateStack
+              - cloudformation:DescribeStacks
+              - cloudformation:DescribeStackEvents
+              - cloudformation:DescribeStackResources
+              - cloudformation:ValidateTemplate
+              - cloudformation:ListStacks
+            Resource: '*'
+            
+          # IAM Permissions (limited)
+          - Effect: Allow
+            Action:
+              - iam:GetRole
+              - iam:PassRole
+              - iam:CreateRole
+              - iam:DeleteRole
+              - iam:AttachRolePolicy
+              - iam:DetachRolePolicy
+              - iam:ListAttachedRolePolicies
+            Resource: 
+              - !Sub 'arn:aws:iam::*:role/${EnvironmentName}-*'
+              - !GetAtt RDSEnhancedMonitoringRole.Arn
+              - !GetAtt RDSServiceRole.Arn
+              
+          # CloudWatch Permissions
+          - Effect: Allow
+            Action:
+              - cloudwatch:GetMetricStatistics
+              - cloudwatch:ListMetrics
+              - cloudwatch:PutMetricAlarm
+              - cloudwatch:DeleteAlarms
+              - cloudwatch:DescribeAlarms
+              - logs:DescribeLogGroups
+              - logs:DescribeLogStreams
+              - logs:GetLogEvents
+              - logs:FilterLogEvents
+            Resource: '*'
+            
+          # Cost and Billing (read-only)
+          - Effect: Allow
+            Action:
+              - ce:GetCostAndUsage
+              - ce:GetDimensionValues
+              - ce:GetReservationCoverage
+              - ce:GetReservationPurchaseRecommendation
+              - ce:GetReservationUtilization
+              - ce:GetUsageReport
+              - budgets:ViewBudget
+              - budgets:DescribeBudget
+            Resource: '*'
+
+  # Group for Students/Users
+  PostgreSQLReplicationUsersGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: !Sub '${EnvironmentName}-Users'
+      ManagedPolicyArns:
+        - !Ref PostgreSQLReplicationUserPolicy
+
+  # CloudFormation Execution Role
+  CloudFormationExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${EnvironmentName}-CloudFormationExecutionRole'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudformation.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CloudFormationExecutionPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: '*'
+                Resource: '*'
+
+Outputs:
+  RDSEnhancedMonitoringRoleArn:
+    Description: ARN of the RDS Enhanced Monitoring Role
+    Value: !GetAtt RDSEnhancedMonitoringRole.Arn
+    Export:
+      Name: !Sub '${EnvironmentName}-RDSEnhancedMonitoringRole-Arn'
+
+  UserPolicyArn:
+    Description: ARN of the user policy
+    Value: !Ref PostgreSQLReplicationUserPolicy
+    Export:
+      Name: !Sub '${EnvironmentName}-UserPolicy-Arn'
+
+  UsersGroupName:
+    Description: Name of the users group
+    Value: !Ref PostgreSQLReplicationUsersGroup
+    Export:
+      Name: !Sub '${EnvironmentName}-UsersGroup-Name'
+
+  CloudFormationExecutionRoleArn:
+    Description: ARN of the CloudFormation execution role
+    Value: !GetAtt CloudFormationExecutionRole.Arn
+    Export:
+      Name: !Sub '${EnvironmentName}-CloudFormationExecutionRole-Arn'

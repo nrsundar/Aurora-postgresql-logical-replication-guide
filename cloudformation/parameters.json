@@ -1,0 +1,26 @@
+[
+  {
+    "ParameterKey": "EnvironmentName",
+    "ParameterValue": "PostgreSQLReplication"
+  },
+  {
+    "ParameterKey": "DBInstanceClass",
+    "ParameterValue": "db.r6g.large"
+  },
+  {
+    "ParameterKey": "DBName",
+    "ParameterValue": "replication_demo"
+  },
+  {
+    "ParameterKey": "DBUsername",
+    "ParameterValue": "postgres"
+  },
+  {
+    "ParameterKey": "DBPassword",
+    "ParameterValue": "ChangeMe123!"
+  },
+  {
+    "ParameterKey": "YourIPAddress",
+    "ParameterValue": "0.0.0.0/0"
+  }
+]

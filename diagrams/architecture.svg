@@ -1,0 +1,110 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="awsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF9900;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6600;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="dbGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#336791;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1E3A5F;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f8f9fa"/>
+  
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2c3e50">
+    PostgreSQL Logical Replication Architecture
+  </text>
+  
+  <!-- AWS Cloud -->
+  <rect x="50" y="80" width="700" height="480" rx="20" fill="none" stroke="#FF9900" stroke-width="3" stroke-dasharray="10,5"/>
+  <text x="400" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FF9900">
+    AWS Cloud (us-east-1)
+  </text>
+  
+  <!-- VPC -->
+  <rect x="100" y="130" width="600" height="400" rx="15" fill="#E8F4FD" stroke="#1976D2" stroke-width="2"/>
+  <text x="400" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1976D2">
+    VPC (10.0.0.0/16)
+  </text>
+  
+  <!-- Primary Subnet -->
+  <rect x="130" y="180" width="250" height="320" rx="10" fill="#C8E6C9" stroke="#4CAF50" stroke-width="2"/>
+  <text x="255" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4CAF50">
+    Public Subnet AZ-A
+  </text>
+  <text x="255" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#4CAF50">
+    10.0.1.0/24
+  </text>
+  
+  <!-- Replica Subnet -->
+  <rect x="420" y="180" width="250" height="320" rx="10" fill="#FFECB3" stroke="#FF9800" stroke-width="2"/>
+  <text x="545" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF9800">
+    Public Subnet AZ-B
+  </text>
+  <text x="545" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FF9800">
+    10.0.2.0/24
+  </text>
+  
+  <!-- Primary Database -->
+  <g transform="translate(180, 260)">
+    <rect width="150" height="100" rx="10" fill="url(#dbGradient)" stroke="#2c3e50" stroke-width="2"/>
+    <circle cx="75" cy="30" r="15" fill="white"/>
+    <text x="75" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#336791">DB</text>
+    <text x="75" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Primary</text>
+    <text x="75" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">db.r6g.large</text>
+    <text x="75" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">PostgreSQL 15</text>
+  </g>
+  
+  <!-- Replica Database -->
+  <g transform="translate(470, 260)">
+    <rect width="150" height="100" rx="10" fill="url(#dbGradient)" stroke="#2c3e50" stroke-width="2"/>
+    <circle cx="75" cy="30" r="15" fill="white"/>
+    <text x="75" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#336791">DB</text>
+    <text x="75" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Replica</text>
+    <text x="75" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">db.r6g.large</text>
+    <text x="75" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">PostgreSQL 15</text>
+  </g>
+  
+  <!-- Replication Arrow -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#e74c3c"/>
+    </marker>
+  </defs>
+  <path d="M 330 310 Q 400 280 470 310" stroke="#e74c3c" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="400" y="295" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#e74c3c">
+    Logical Replication
+  </text>
+  
+  <!-- Security Group -->
+  <rect x="160" y="390" width="190" height="80" rx="5" fill="none" stroke="#9C27B0" stroke-width="2" stroke-dasharray="5,5"/>
+  <text x="255" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#9C27B0">
+    Security Group
+  </text>
+  <text x="255" y="425" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9C27B0">
+    Port 5432 (PostgreSQL)
+  </text>
+  <text x="255" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9C27B0">
+    SSL Required
+  </text>
+  
+  <rect x="450" y="390" width="190" height="80" rx="5" fill="none" stroke="#9C27B0" stroke-width="2" stroke-dasharray="5,5"/>
+  <text x="545" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#9C27B0">
+    Security Group
+  </text>
+  <text x="545" y="425" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9C27B0">
+    Port 5432 (PostgreSQL)
+  </text>
+  <text x="545" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9C27B0">
+    SSL Required
+  </text>
+  
+  <!-- Internet Gateway -->
+  <rect x="370" y="550" width="60" height="30" rx="5" fill="url(#awsGradient)"/>
+  <text x="400" y="570" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">
+    IGW
+  </text>
+</svg>

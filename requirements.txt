@@ -1,0 +1,47 @@
+# PostgreSQL Logical Replication Python Dependencies
+# Install with: pip install -r requirements.txt
+
+# Database connectivity
+psycopg2-binary>=2.9.5
+
+# Data manipulation and analysis
+pandas>=1.5.0
+numpy>=1.24.0
+
+# JSON handling
+simplejson>=3.18.0
+
+# Configuration management
+python-dotenv>=0.19.0
+
+# AWS SDK (for CloudWatch metrics, optional)
+boto3>=1.26.0
+botocore>=1.29.0
+
+# Monitoring and alerting (optional)
+requests>=2.28.0
+
+# Command line argument parsing
+argparse>=1.4.0
+
+# Date and time utilities
+python-dateutil>=2.8.0
+
+# Logging and formatting
+colorama>=0.4.6
+tabulate>=0.9.0
+
+# Testing utilities
+pytest>=7.2.0
+pytest-cov>=4.0.0
+
+# Type checking
+mypy>=1.0.0
+
+# Code formatting
+black>=22.0.0
+flake8>=6.0.0
+
+# Documentation
+sphinx>=5.0.0
+sphinx-rtd-theme>=1.2.0

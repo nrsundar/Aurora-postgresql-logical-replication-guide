@@ -1,0 +1,385 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Aurora PostgreSQL Logical Replication Infrastructure - Cross-Region Setup'
+
+Parameters:
+  EnvironmentName:
+    Description: Environment name prefix
+    Type: String
+    Default: PostgreSQLReplication
+    
+  DBInstanceClass:
+    Description: RDS instance class
+    Type: String
+    Default: db.r6g.large
+    AllowedValues:
+      - db.t3.micro
+      - db.t3.small
+      - db.t3.medium
+      
+  DBName:
+    Description: Database name
+    Type: String
+    Default: replication_demo
+    MinLength: 1
+    MaxLength: 64
+    
+  DBUsername:
+    Description: Database username
+    Type: String
+    Default: postgres
+    MinLength: 1
+    MaxLength: 16
+    
+  DBPassword:
+    Description: Database password
+    Type: String
+    NoEcho: true
+    MinLength: 8
+    MaxLength: 32
+    ConstraintDescription: Must be 8-32 characters
+    
+  YourIPAddress:
+    Description: Your IP address for database access (x.x.x.x/32)
+    Type: String
+    MinLength: 9
+    MaxLength: 18
+    AllowedPattern: '^([0-9]{1,3}\.){3}[0-9]{1,3}/32$'
+    ConstraintDescription: Must be a valid IP address in CIDR format (x.x.x.x/32)
+
+Resources:
+  # VPC Configuration
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-VPC'
+        - Key: Project
+          Value: PostgreSQLReplication
+
+  # Internet Gateway
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-IGW'
+
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+
+  # Subnets
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [0, !GetAZs '']
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName} Public Subnet (AZ1)'
+
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [1, !GetAZs '']
+      CidrBlock: 10.0.2.0/24
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName} Public Subnet (AZ2)'
+
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [0, !GetAZs '']
+      CidrBlock: 10.0.11.0/24
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName} Private Subnet (AZ1)'
+
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [1, !GetAZs '']
+      CidrBlock: 10.0.12.0/24
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName} Private Subnet (AZ2)'
+
+  # Route Tables
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName} Public Routes'
+
+  DefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet1
+
+  PublicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet2
+
+  # Security Groups
+  DatabaseSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub '${EnvironmentName}-database-sg'
+      GroupDescription: Security group for PostgreSQL databases
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          CidrIp: !Ref YourIPAddress
+          Description: PostgreSQL access from your IP
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          SourceSecurityGroupId: !Ref DatabaseSecurityGroup
+          Description: PostgreSQL access between databases
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-database-sg'
+
+  # DB Subnet Group
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Subnet group for PostgreSQL databases
+      SubnetIds:
+        - !Ref PublicSubnet1
+        - !Ref PublicSubnet2
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-db-subnet-group'
+
+  # Aurora Cluster Parameter Group
+  DBClusterParameterGroup:
+    Type: AWS::RDS::DBClusterParameterGroup
+    Properties:
+      Description: Aurora cluster parameter group for logical replication
+      Family: aurora-postgresql15
+      Parameters:
+        wal_level: logical
+        max_replication_slots: 10
+        max_wal_senders: 10
+        shared_preload_libraries: pg_stat_statements
+        log_statement: all
+        log_min_duration_statement: 1000
+        rds.logical_replication: 1
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-cluster-params'
+
+  # Aurora DB Parameter Group
+  DBParameterGroup:
+    Type: AWS::RDS::DBParameterGroup
+    Properties:
+      Description: Aurora instance parameter group
+      Family: aurora-postgresql15
+      Parameters:
+        shared_preload_libraries: pg_stat_statements
+        log_statement: all
+        log_min_duration_statement: 1000
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-db-params'
+
+  # Primary Aurora Cluster
+  PrimaryAuroraCluster:
+    Type: AWS::RDS::DBCluster
+    DeletionPolicy: Delete
+    Properties:
+      DBClusterIdentifier: !Sub '${EnvironmentName}-primary-cluster'
+      Engine: aurora-postgresql
+      EngineVersion: '15.4'
+      MasterUsername: !Ref DBUsername
+      MasterUserPassword: !Ref DBPassword
+      DatabaseName: !Ref DBName
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      DBClusterParameterGroupName: !Ref DBClusterParameterGroup
+      VpcSecurityGroupIds:
+        - !Ref DatabaseSecurityGroup
+      BackupRetentionPeriod: 7
+      PreferredBackupWindow: '03:00-04:00'
+      PreferredMaintenanceWindow: 'sun:04:00-sun:05:00'
+      StorageEncrypted: true
+      EnableCloudwatchLogsExports:
+        - postgresql
+      DeletionProtection: false
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-primary-cluster'
+        - Key: Role
+          Value: Primary
+
+  # Primary Aurora Instance
+  PrimaryAuroraInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: !Sub '${EnvironmentName}-primary-instance'
+      DBInstanceClass: !Ref DBInstanceClass
+      Engine: aurora-postgresql
+      DBClusterIdentifier: !Ref PrimaryAuroraCluster
+      PubliclyAccessible: true
+      MonitoringInterval: 60
+      MonitoringRoleArn: !GetAtt EnhancedMonitoringRole.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-primary-instance'
+        - Key: Role
+          Value: Writer
+
+  # Replica Aurora Cluster
+  ReplicaAuroraCluster:
+    Type: AWS::RDS::DBCluster
+    DeletionPolicy: Delete
+    Properties:
+      DBClusterIdentifier: !Sub '${EnvironmentName}-replica-cluster'
+      Engine: aurora-postgresql
+      EngineVersion: '15.4'
+      MasterUsername: !Ref DBUsername
+      MasterUserPassword: !Ref DBPassword
+      DatabaseName: !Ref DBName
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      DBClusterParameterGroupName: !Ref DBClusterParameterGroup
+      VpcSecurityGroupIds:
+        - !Ref DatabaseSecurityGroup
+      BackupRetentionPeriod: 7
+      PreferredBackupWindow: '05:00-06:00'
+      PreferredMaintenanceWindow: 'sun:06:00-sun:07:00'
+      StorageEncrypted: true
+      EnableCloudwatchLogsExports:
+        - postgresql
+      DeletionProtection: false
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-replica-cluster'
+        - Key: Role
+          Value: Replica
+
+  # Replica Aurora Instance
+  ReplicaAuroraInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: !Sub '${EnvironmentName}-replica-instance'
+      DBInstanceClass: !Ref DBInstanceClass
+      Engine: aurora-postgresql
+      DBClusterIdentifier: !Ref ReplicaAuroraCluster
+      PubliclyAccessible: true
+      MonitoringInterval: 60
+      MonitoringRoleArn: !GetAtt EnhancedMonitoringRole.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-replica-instance'
+        - Key: Role
+          Value: Reader
+
+  # Enhanced Monitoring Role
+  EnhancedMonitoringRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: ''
+            Effect: Allow
+            Principal:
+              Service: monitoring.rds.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole'
+      Path: /
+
+Outputs:
+  VPC:
+    Description: VPC ID
+    Value: !Ref VPC
+    Export:
+      Name: !Sub '${EnvironmentName}-VPC'
+
+  PrimaryClusterEndpoint:
+    Description: Primary Aurora cluster writer endpoint
+    Value: !GetAtt PrimaryAuroraCluster.Endpoint
+    Export:
+      Name: !Sub '${EnvironmentName}-primary-cluster-endpoint'
+
+  PrimaryClusterReadEndpoint:
+    Description: Primary Aurora cluster reader endpoint
+    Value: !GetAtt PrimaryAuroraCluster.ReadEndpoint
+    Export:
+      Name: !Sub '${EnvironmentName}-primary-cluster-read-endpoint'
+
+  ReplicaClusterEndpoint:
+    Description: Replica Aurora cluster writer endpoint
+    Value: !GetAtt ReplicaAuroraCluster.Endpoint
+    Export:
+      Name: !Sub '${EnvironmentName}-replica-cluster-endpoint'
+
+  ReplicaClusterReadEndpoint:
+    Description: Replica Aurora cluster reader endpoint
+    Value: !GetAtt ReplicaAuroraCluster.ReadEndpoint
+    Export:
+      Name: !Sub '${EnvironmentName}-replica-cluster-read-endpoint'
+
+  DatabasePort:
+    Description: Aurora PostgreSQL port
+    Value: !GetAtt PrimaryAuroraCluster.Port
+    Export:
+      Name: !Sub '${EnvironmentName}-database-port'
+
+  DatabaseSecurityGroup:
+    Description: Security group for databases
+    Value: !Ref DatabaseSecurityGroup
+    Export:
+      Name: !Sub '${EnvironmentName}-database-sg'
+
+  ConnectionString:
+    Description: Primary database connection string template
+    Value: !Sub 'postgresql://${DBUsername}:PASSWORD@${PrimaryDatabase.Endpoint.Address}:5432/${DBName}'
+
+  EstimatedMonthlyCost:
+    Description: Estimated monthly cost in USD
+    Value: !Sub 
+      - 'Approximately $${Cost} USD/month for ${InstanceClass} instances'
+      - Cost: !If 
+          - !Equals [!Ref DBInstanceClass, 'db.t3.micro']
+          - '25-30'
+          - !If
+              - !Equals [!Ref DBInstanceClass, 'db.t3.small'] 
+              - '45-55'
+              - '85-100'
+        InstanceClass: !Ref DBInstanceClass
+
+Conditions:
+  IsMicroInstance: !Equals [!Ref DBInstanceClass, 'db.t3.micro']
+  IsSmallInstance: !Equals [!Ref DBInstanceClass, 'db.t3.small']
