@@ -18,9 +18,9 @@ Welcome to the comprehensive educational guide for setting up PostgreSQL logical
 ## 📚 Documentation
 
 - [Setup Guide](setup-guide.md) - Initial setup and prerequisites
-- [Configuration Guide](configuration.html) - Step-by-step configuration
-- [Troubleshooting Guide](troubleshooting.html) - Common issues and solutions
-- [Cost Management Guide](cost-management.html) - Cost optimization strategies
+- [Configuration Guide](configuration.md) - Step-by-step configuration
+- [Troubleshooting Guide](troubleshooting.md) - Common issues and solutions
+- [Cost Management Guide](cost-management.md) - Cost optimization strategies
 
 ## ⚠️ Important Notice
 
